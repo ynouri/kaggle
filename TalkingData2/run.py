@@ -12,6 +12,7 @@ from sklearn.metrics import roc_curve
 import config
 import features
 import info
+import load
 
 # Main script
 if __name__ == '__main__':
@@ -21,14 +22,8 @@ if __name__ == '__main__':
 
     # Load data
     file = sys.argv[1]
-    file_path = config.DATA_PATH + file
     exp.log_parameter('File', file)
-    logging.info("File = {}".format(file_path))
-    logging.info("Loading dataframe...")
-    df = pd.read_csv(file_path)
-    logging.info("Dataframe loaded.")
-    info.rows(df)
-    info.memory(df)
+    df = load.data(file)
 
     # Add features
     logging.info("Start adding features...")

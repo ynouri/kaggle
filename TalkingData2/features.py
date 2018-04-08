@@ -5,8 +5,8 @@ import logging
 # Number of unique X (where X=clicks, apps, devices, os, channels) for a given IP
 
 def add_nunique_by_ip(df, new_feature, original_feature):
-    nunique = df.groupby('ip')[original_feature].nunique()
-    df[new_feature] = nunique[df.ip].values
+    nunique = df[['ip', original_feature]].drop_duplicates().groupby('ip').count()
+    df[new_feature] = nunique.loc[df.ip].values
     logging.info("Added feature: {}".format(new_feature))
     return [new_feature]
 
