@@ -28,13 +28,16 @@ if __name__ == '__main__':
     # Add features
     logging.info("Start adding features...")
     feature_labels = features.add_all(df)
+    logging.info("Features added.")
     info.memory(df)
-
+    
     # Train the model
+    logging.info("Start training model...")
     X = df[feature_labels]
     y = df.is_attributed
     logreg = linear_model.LogisticRegression()
     logreg.fit(X, y)
+    logging.info("Model trained.")
 
     # AUC score
     y_score = logreg.predict_proba(X)[:, 1]
