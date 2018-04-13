@@ -1,6 +1,31 @@
 import numpy as np
 import pandas as pd
 import logging
+import sys
+# Project modules
+import info
+import load
+
+# CLI entry point
+
+def cli_add_features(file):
+
+    # Load data
+    df = load.data(file)
+
+    # Add features
+    logging.info("Start adding features...")
+    feature_labels = add_all(df)
+    logging.info("Features added.")
+    info.memory(df)
+
+# Add all features function
+
+def add_all(df):
+    features = []
+    features += add_all_nunique(df)
+    features += add_click_time_rank(df)
+    return features
 
 # Number of unique X (where X=clicks, apps, devices, os, channels) for a given IP
 
@@ -37,12 +62,3 @@ def add_click_time_rank(df):
     df[new_feature] = df.groupby('ip').click_time.rank(pct=True).values
     logging.info("Added feature: {}".format(new_feature))
     return [new_feature]
-
-
-# Add all features function
-
-def add_all(df):
-    features = []
-    features += add_all_nunique(df)
-    features += add_click_time_rank(df)
-    return features

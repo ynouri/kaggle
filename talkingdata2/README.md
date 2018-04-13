@@ -2,6 +2,24 @@
 
 https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection
 
+## How to use
+
+```bash
+# Add the features to the model
+# It will generate train_with_features.hdf.
+# Do it both for train & test sets
+./talkingdata2.py add-features --file train.csv
+./talkingdata2.py add-features --file test.csv
+
+# Train the linear regression model
+# It will generate coefficients file linreg_coeffs.csv
+./talkingdata2.py train --file train_with_features.hdf
+
+# Generate predictions on the test data
+# A file predictions.csv is generated
+./talkingdata2.py predict --file test_with_features.hdf --coeffs linreg_coeffs.csv
+```
+
 ## TO DO list & enhancement ideas
 * Convert initial CSV file to HDF to get a faster loading
 * The new features datatypes need to be optimized so that they can take less memory space (adding 6 features took the df object from 4.99GB to 13.26GB)
