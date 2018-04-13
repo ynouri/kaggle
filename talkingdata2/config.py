@@ -5,7 +5,7 @@ import os
 PROJECT_NAME = 'kaggle-talkingdata2'
 
 # Paths
-DATA_BASE_PATH = os.getenv('DATA_BASE_PATH')
+DATA_BASE_PATH = os.path.expanduser(os.getenv('DATA_BASE_PATH'))
 DATA_PATH = DATA_BASE_PATH + PROJECT_NAME + '/'
 
 # Comet

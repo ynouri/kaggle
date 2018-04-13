@@ -4,28 +4,30 @@ import logging
 import sys
 # Project modules
 import info
-import load
+import data
 
 # CLI entry point
 
 def cli_add_features(file):
-
-    # Load data
-    df = load.data(file)
-
+    # Load raw dataset
+    df = data.load(file)
     # Add features
-    logging.info("Start adding features...")
     feature_labels = add_all(df)
-    logging.info("Features added.")
     info.memory(df)
+    # Save dataset enriched with features
+    data.save_hdf(dataframe=df, original_file=file, suffix='with_features')
+
 
 # Add all features function
 
 def add_all(df):
+    logging.info("Start adding features...")
     features = []
     features += add_all_nunique(df)
     features += add_click_time_rank(df)
+    logging.info("Features added.")
     return features
+
 
 # Number of unique X (where X=clicks, apps, devices, os, channels) for a given IP
 
@@ -38,7 +40,7 @@ def add_nunique_by_ip(df, new_feature, original_feature):
         how='left',
         on='ip',
         rsuffix=new_feature
-    )[original_feature].values
+    )[original_feature].astype(dtype=np.uint16).values
     logging.info("Added feature: {}".format(new_feature))
     return [new_feature]
 

@@ -10,7 +10,7 @@ from sklearn.metrics import roc_curve
 import config
 import features
 import info
-import load
+import data
 
 
 # CLI entry point

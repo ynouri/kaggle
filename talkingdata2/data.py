@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import os
+# Project modules
 import config
 import info
 import logging
@@ -18,7 +20,7 @@ parse_dates=[
     'attributed_time'
 ]
 
-def data(file):
+def load(file):
     file_path = config.DATA_PATH + file
     logging.info("File = {}".format(file_path))
     logging.info("Loading dataframe...")
@@ -32,3 +34,20 @@ def data(file):
     info.rows(df)
     info.memory(df)
     return df
+
+
+def save_hdf(dataframe, original_file, suffix):
+    logging.info("Saving dataframe to HDF file...")
+    # If original_file = train.csv, original_name = train
+    original_name = original_file.split('.')[0]
+    # e.g. DATA_PATH + test_with_features.hdf
+    file_path = config.DATA_PATH + original_name + '_' + suffix + '.hdf'
+    logging.info("File = {}".format(file_path))
+    # Write to hdf
+    dataframe.to_hdf(
+        path_or_buf=file_path,
+        key='data',
+        mode='w',
+        format='f'
+    )
+    logging.info("Dataframe saved.")
