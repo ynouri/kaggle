@@ -25,7 +25,7 @@ parse_dates = [
 def load(file):
     """Load a .csv or .hdf dataset from data directory."""
     _, extension = os.path.splitext(file)
-    file_path = config.DATA_PATH + file
+    file_path = os.path.join(config.DATA_PATH, file)
     logging.info("File = {}".format(file_path))
     logging.info("Loading dataframe...")
     if extension == '.csv':
@@ -53,7 +53,8 @@ def save_hdf(dataframe, original_file, suffix):
     # If original_file = train.csv, original_name = train
     original_name = original_file.split('.')[0]
     # e.g. DATA_PATH + test_with_features.hdf
-    file_path = config.DATA_PATH + original_name + '_' + suffix + '.hdf'
+    file = original_name + '_' + suffix + '.hdf'
+    file_path = os.path.join(config.DATA_PATH, file)
     logging.info("File = {}".format(file_path))
     # Write to hdf
     dataframe.to_hdf(

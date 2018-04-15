@@ -17,7 +17,7 @@ def cli_train(file):
     # Create Comet experiment
     exp = Experiment(**config.COMET)
 
-    # Load dataset with enriched features
+    # Load dataset with e   nriched features
     df = data.load(file)
     feature_names = features.get_all_names()
 
