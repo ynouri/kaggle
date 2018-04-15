@@ -1,6 +1,6 @@
 import logging
 
-# Predict entry point
 
 def cli_predict():
+    """Prediction CLI entry point."""
     logging.info("Predict!")

@@ -13,9 +13,8 @@ import info
 import data
 
 
-# CLI entry point
-
 def cli_train(file):
+    """Train CLI entry point."""
 
     # Create Comet experiment
     exp = Experiment(**config.COMET)

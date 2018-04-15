@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
-import os
 # Project modules
 import config
 import info
 import logging
 
-column_dtypes={
+
+column_dtypes = {
     'ip': np.uint32,
     'app': np.uint16,
     'device': np.uint16,
@@ -15,12 +15,14 @@ column_dtypes={
     'is_attributed': np.bool_
 }
 
-parse_dates=[
+parse_dates = [
     'click_time',
     'attributed_time'
 ]
 
+
 def load(file):
+    """Load a .csv dataset from data directory."""
     file_path = config.DATA_PATH + file
     logging.info("File = {}".format(file_path))
     logging.info("Loading dataframe...")
@@ -37,6 +39,7 @@ def load(file):
 
 
 def save_hdf(dataframe, original_file, suffix):
+    """Save a dataframe to .hdf format in the data directory."""
     logging.info("Saving dataframe to HDF file...")
     # If original_file = train.csv, original_name = train
     original_name = original_file.split('.')[0]
