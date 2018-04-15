@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import os
 # Project modules
 import config
 import info
@@ -22,16 +23,24 @@ parse_dates = [
 
 
 def load(file):
-    """Load a .csv dataset from data directory."""
+    """Load a .csv or .hdf dataset from data directory."""
+    _, extension = os.path.splitext(file)
     file_path = config.DATA_PATH + file
     logging.info("File = {}".format(file_path))
     logging.info("Loading dataframe...")
-    df = pd.read_csv(
-        filepath_or_buffer=file_path,
-        nrows=None,
-        dtype=column_dtypes,
-        parse_dates=parse_dates
-    )
+    if extension == '.csv':
+        df = pd.read_csv(
+            filepath_or_buffer=file_path,
+            nrows=None,
+            dtype=column_dtypes,
+            parse_dates=parse_dates
+        )
+    elif extension == '.hdf':
+        df = pd.read_hdf(
+            path_or_buf=file_path,
+            key='data',
+            nrows=None
+        )
     logging.info("Dataframe loaded.")
     info.rows(df)
     info.memory(df)

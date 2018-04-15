@@ -1,27 +1,29 @@
 from comet_ml import Experiment
-import pandas as pd
-import numpy as np
+# import pandas as pd
+# import numpy as np
 import logging
 from sklearn import linear_model
-from sklearn import model_selection
+# from sklearn import model_selection
 from sklearn.metrics import roc_auc_score
-from sklearn.metrics import roc_curve
+# from sklearn.metrics import roc_curve
 # Project modules
 import config
 import features
-import info
 import data
 
 
 def cli_train(file):
     """Train CLI entry point."""
-
     # Create Comet experiment
     exp = Experiment(**config.COMET)
 
+    # Load dataset with enriched features
+    df = data.load(file)
+    feature_names = features.get_all_names()
+
     # Train the model
     logging.info("Start training model...")
-    X = df[feature_labels]
+    X = df[feature_names]
     y = df.is_attributed
     logreg = linear_model.LogisticRegression()
     logreg.fit(X, y)

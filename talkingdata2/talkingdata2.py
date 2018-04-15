@@ -14,16 +14,16 @@ def add_features(file):
     features.cli_add_features(file)
 
 
-@click.option('--file', help='Feature enriched dataset HDF file')
 @click.command(name='train')
+@click.option('--file', help='Feature enriched dataset HDF file')
 def train_(file):
     """Train the model."""
     train.cli_train(file)
 
 
+@click.command(name='predict')
 @click.option('--file', help='Feature enriched dataset HDF file')
 @click.option('--parameters', help='Trained model parameters')
-@click.command(name='predict')
 def predict_(file, parameters):
     """Predict based on trained model and generate results to .csv."""
     predict.cli_predict(file, parameters)
