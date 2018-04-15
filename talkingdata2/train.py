@@ -17,7 +17,7 @@ def cli_train(file):
     # Create Comet experiment
     exp = Experiment(**config.COMET)
 
-    # Load dataset with e   nriched features
+    # Load dataset with enriched features
     df = data.load(file)
     feature_names = features.get_all_names()
 
@@ -25,9 +25,16 @@ def cli_train(file):
     logging.info("Start training model...")
     X = df[feature_names]
     y = df.is_attributed
-    logreg = linear_model.LogisticRegression()
+    logreg = linear_model.LogisticRegression(
+        solver='sag',
+        verbose=1,
+        max_iter=200
+    )
     logreg.fit(X, y)
     logging.info("Model trained.")
+
+    # Persists parameters to disk
+    data.persist_dump(logreg)
 
     # AUC score
     y_score = logreg.predict_proba(X)[:, 1]

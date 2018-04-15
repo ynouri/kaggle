@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import click
 # Project modules
-import features
 import train
+import features
 import predict
 
 
@@ -15,7 +15,8 @@ def add_features(file):
 
 
 @click.command(name='train')
-@click.option('--file', help='Feature enriched dataset HDF file')
+@click.option('--file', default='train_sample_with_features.hdf',
+              help='Feature enriched dataset HDF file')
 def train_(file):
     """Train the model."""
     train.cli_train(file)

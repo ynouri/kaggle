@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
+from sklearn.externals import joblib
 # Project modules
 import config
 import info
@@ -64,3 +65,18 @@ def save_hdf(dataframe, original_file, suffix):
         format='f'
     )
     logging.info("Dataframe saved.")
+
+
+def persist_dump(object_to_dump):
+    """
+    Dump sklearn objects (scaler, logreg) to disk.
+
+    Name of dumped file is equal to the class name with .pkl extension.
+    E.g. StandardScaler.pkl, LogisticRegression.pkl
+    """
+    class_name = object_to_dump.__class__.__name__
+    file = class_name + ".pkl"
+    file_path = os.path.join(config.DATA_PATH, file)
+    joblib.dump(object_to_dump, file_path)
+    logging.info("{} object dumped to disk.".format(class_name))
+    logging.info("File = {}".format(file_path))
