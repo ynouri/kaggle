@@ -17,7 +17,7 @@ https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection
 
 # Train the linear regression model
 # It will generate coefficients file linreg_coeffs.csv
-./talkingdata2.py train --file train_with_features.hdf
+./talkingdata2.py train --file train_with_features_scaled.hdf
 
 # Generate predictions on the test data
 # A file predictions.csv is generated

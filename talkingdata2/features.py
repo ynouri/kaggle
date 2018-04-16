@@ -34,7 +34,7 @@ def cli_add_features(file):
 def cli_scale_features(dataset_file, scaler_file):
     """CLI entry point for features scaling."""
     df = data.load(dataset_file)
-    scale_features(df, scaler_file)
+    df = scale_features(df, scaler_file)
     info.memory(df)
     data.save_hdf(dataframe=df, original_file=dataset_file, suffix='scaled')
 
@@ -49,14 +49,17 @@ def scale_features(df, scaler_file=None):
         data.persist_dump(scaler)
     else:
         scaler = data.persist_load(scaler_file)
-    logging.info("Scaling: transforms the features...")
+    logging.info("Scaling: computes the scaled features...")
     df_scaled_features = pd.DataFrame(
         scaler.transform(df[feature_names]),
         columns=feature_names
     )
+    logging.info("Scaling: drops the original features...")
     df.drop(feature_names, axis=1, inplace=True)
+    logging.info("Scaling: concatenates scaled features into dataframe...")
     df = pd.concat([df, df_scaled_features], axis=1)
     logging.info("Scaling complete.")
+    return df
 
 
 def get_all_names():
