@@ -12,8 +12,8 @@ https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection
 ./talkingdata2.py add-features --file test.csv
 
 # Scale the features
-./talkingdata2.py scaler-features --file train_with_features.hdf
-./talkingdata2.py scaler-features --file test_with_features.hdf --scaler StandardScaler.pkl
+./talkingdata2.py scale-features --file train_with_features.hdf
+./talkingdata2.py scale-features --file test_with_features.hdf --scaler StandardScaler.pkl
 
 # Train the linear regression model
 # It will generate coefficients file linreg_coeffs.csv

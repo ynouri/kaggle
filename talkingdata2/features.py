@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import logging
 # Project modules
 import info
@@ -34,6 +35,7 @@ def cli_scale_features(dataset_file, scaler_file):
     """CLI entry point for features scaling."""
     df = data.load(dataset_file)
     scale_features(df, scaler_file)
+    info.memory(df)
     data.save_hdf(dataframe=df, original_file=dataset_file, suffix='scaled')
 
 
@@ -48,7 +50,12 @@ def scale_features(df, scaler_file=None):
     else:
         scaler = data.persist_load(scaler_file)
     logging.info("Scaling: transforms the features...")
-    df[feature_names] = scaler.transform(df[feature_names])
+    df_scaled_features = pd.DataFrame(
+        scaler.transform(df[feature_names]),
+        columns=feature_names
+    )
+    df.drop(feature_names, axis=1, inplace=True)
+    df = pd.concat([df, df_scaled_features], axis=1)
     logging.info("Scaling complete.")
 
 
