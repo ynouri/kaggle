@@ -24,20 +24,28 @@ def cli_add_features(file):
     add_all(df)
     info.memory(df)
     # Normalize feature and dumps scaler
-    normalize_features(df)
+    # scale_features(df)
     # Save dataset enriched with features
     data.save_hdf(dataframe=df, original_file=file, suffix='with_features')
 
 
-def normalize_features(df, scale_params=None):
-    """Normalize the features of a dataframe and dump the scaler to disk."""
+def cli_scale_features(file):
+    """CLI entry point for features scaling."""
+    df = data.load(file)
+    scale_features(df)
+    data.save_hdf(dataframe=df, original_file=file, suffix='scaled')
+
+
+def scale_features(df, scale_params=None):
+    """Scale the features of a dataframe and dump the scaler to disk."""
     feature_names = get_all_names()
     if not scale_params:
         scaler = StandardScaler()
-        logging.info("Normalization: fits the scaler to the features...")
+        logging.info("Scaling: fits the scaler to the features...")
         scaler.fit(df[feature_names])
-        logging.info("Normalization complete.")
+        logging.info("Scaling: transforms the features...")
         df[feature_names] = scaler.transform(df[feature_names])
+        logging.info("Scaling complete.")
         data.persist_dump(scaler)
 
 

@@ -14,6 +14,14 @@ def add_features(file):
     features.cli_add_features(file)
 
 
+@click.command(name='scale-features')
+@click.option('--file', default='train_sample_with_features.hdf',
+              help='Training data CSV or HDF file, enriched with features.')
+def scale_features(file):
+    """Scale dataset features."""
+    features.cli_scale_features(file)
+
+
 @click.command(name='train')
 @click.option('--file', default='train_sample_with_features.hdf',
               help='Feature enriched dataset HDF file')
@@ -37,6 +45,7 @@ def main():
 
 
 main.add_command(add_features)
+main.add_command(scale_features)
 main.add_command(train_)
 main.add_command(predict_)
 
