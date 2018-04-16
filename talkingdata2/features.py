@@ -5,6 +5,7 @@ import info
 import data
 from sklearn.preprocessing import StandardScaler
 
+
 FEATURES_NUNIQUE = {
     'total_clicks_by_ip': 'click_time',
     'nunique_apps_by_ip': 'app',
@@ -17,7 +18,7 @@ FEATURE_CLICK_TIME_RANK = 'click_time_rank'
 
 
 def cli_add_features(file):
-    """Entry point for the CLI defined in talkingdata.py."""
+    """CLI entry point for adding features to a dataset."""
     # Load raw dataset
     df = data.load(file)
     # Add features
@@ -29,24 +30,26 @@ def cli_add_features(file):
     data.save_hdf(dataframe=df, original_file=file, suffix='with_features')
 
 
-def cli_scale_features(file):
+def cli_scale_features(dataset_file, scaler_file):
     """CLI entry point for features scaling."""
-    df = data.load(file)
-    scale_features(df)
-    data.save_hdf(dataframe=df, original_file=file, suffix='scaled')
+    df = data.load(dataset_file)
+    scale_features(df, scaler_file)
+    data.save_hdf(dataframe=df, original_file=dataset_file, suffix='scaled')
 
 
-def scale_features(df, scale_params=None):
+def scale_features(df, scaler_file=None):
     """Scale the features of a dataframe and dump the scaler to disk."""
     feature_names = get_all_names()
-    if not scale_params:
+    if not scaler_file:
         scaler = StandardScaler()
         logging.info("Scaling: fits the scaler to the features...")
         scaler.fit(df[feature_names])
-        logging.info("Scaling: transforms the features...")
-        df[feature_names] = scaler.transform(df[feature_names])
-        logging.info("Scaling complete.")
         data.persist_dump(scaler)
+    else:
+        scaler = data.persist_load(scaler_file)
+    logging.info("Scaling: transforms the features...")
+    df[feature_names] = scaler.transform(df[feature_names])
+    logging.info("Scaling complete.")
 
 
 def get_all_names():

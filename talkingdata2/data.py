@@ -80,3 +80,13 @@ def persist_dump(object_to_dump):
     joblib.dump(object_to_dump, file_path)
     logging.info("{} object dumped to disk.".format(class_name))
     logging.info("File = {}".format(file_path))
+
+
+def persist_load(object_file_to_load):
+    """Reload sklearn objects dumped with persist_dump."""
+    file_path = os.path.join(config.DATA_PATH, object_file_to_load)
+    logging.info("Loading pickled object...")
+    loaded_object = joblib.load(file_path)
+    class_name = loaded_object.__class__.__name__
+    logging.info("{} object loaded from disk.".format(class_name))
+    return loaded_object

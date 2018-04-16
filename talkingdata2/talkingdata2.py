@@ -17,9 +17,11 @@ def add_features(file):
 @click.command(name='scale-features')
 @click.option('--file', default='train_sample_with_features.hdf',
               help='Training data CSV or HDF file, enriched with features.')
-def scale_features(file):
+@click.option('--scaler', default=None,
+              help='StandardScaler joblib dump file.')
+def scale_features(file, scaler):
     """Scale dataset features."""
-    features.cli_scale_features(file)
+    features.cli_scale_features(file, scaler)
 
 
 @click.command(name='train')
