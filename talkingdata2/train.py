@@ -1,4 +1,5 @@
-from comet_ml import Experiment
+import comet_ml
+from unittest.mock import Mock
 # import pandas as pd
 # import numpy as np
 import logging
@@ -12,10 +13,18 @@ import features
 import data
 
 
-def cli_train(file):
+def get_experiment(enable_comet_ml=True):
+    """Return a comet_ml experiment or a mock object. Useful for unit tests."""
+    if enable_comet_ml:
+        return comet_ml.Experiment(**config.COMET)
+    else:
+        return Mock(spec=comet_ml.Experiment)
+
+
+def cli_train(file, enable_comet_ml):
     """Train CLI entry point."""
     # Create Comet experiment
-    exp = Experiment(**config.COMET)
+    exp = get_experiment(enable_comet_ml)
 
     # Load dataset with enriched features
     df = data.load(file)
@@ -28,7 +37,8 @@ def cli_train(file):
     logreg = linear_model.LogisticRegression(
         solver='sag',
         verbose=1,
-        max_iter=200
+        max_iter=200,
+        n_jobs=-1
     )
     logreg.fit(X, y)
     logging.info("Model trained.")
@@ -41,3 +51,4 @@ def cli_train(file):
     auc_score = roc_auc_score(y, y_score)
     logging.info("AUC score = {:0.4f}".format(auc_score))
     exp.log_metric("AUC score", auc_score)
+    return auc_score

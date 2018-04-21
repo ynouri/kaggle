@@ -27,9 +27,11 @@ def scale_features(file, scaler):
 @click.command(name='train')
 @click.option('--file', default='train_sample_with_features.hdf',
               help='Feature enriched dataset HDF file')
-def train_(file):
+@click.option('--enable-comet-ml', is_flag=True,
+              help='Enable experiment results collection with Comet ML.')
+def train_(file, enable_comet_ml):
     """Train the model."""
-    train.cli_train(file)
+    train.cli_train(file, enable_comet_ml)
 
 
 @click.command(name='predict')
