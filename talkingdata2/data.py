@@ -8,19 +8,30 @@ import info
 import logging
 
 
-column_dtypes = {
-    'ip': np.uint32,
-    'app': np.uint16,
-    'device': np.uint16,
-    'os': np.uint16,
-    'channel': np.uint16,
-    'is_attributed': np.bool_
-}
+def get_column_dtypes(file):
+    """Return column dtypes."""
+    column_dtypes = {
+        'ip': np.uint32,
+        'app': np.uint16,
+        'device': np.uint16,
+        'os': np.uint16,
+        'channel': np.uint16,
+        'is_attributed': np.bool_
+    }
+    if 'test' in file:
+        column_dtypes.pop('is_attributed')
+    return column_dtypes
 
-parse_dates = [
-    'click_time',
-    'attributed_time'
-]
+
+def get_parse_dates(file):
+    """Return a list of columns for which dates have to be parsed."""
+    parse_dates = [
+        'click_time',
+        'attributed_time'
+    ]
+    if 'test' in file:
+        parse_dates.remove('attributed_time')
+    return parse_dates
 
 
 def load(file):
@@ -33,8 +44,8 @@ def load(file):
         df = pd.read_csv(
             filepath_or_buffer=file_path,
             nrows=None,
-            dtype=column_dtypes,
-            parse_dates=parse_dates
+            dtype=get_column_dtypes(file),
+            parse_dates=get_parse_dates(file)
         )
     elif extension == '.hdf':
         df = pd.read_hdf(
