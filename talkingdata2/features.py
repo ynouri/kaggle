@@ -25,8 +25,6 @@ def cli_add_features(file):
     # Add features
     add_all(df)
     info.memory(df)
-    # Normalize feature and dumps scaler
-    # scale_features(df)
     # Save dataset enriched with features
     data.save_hdf(dataframe=df, original_file=file, suffix='with_features')
 
@@ -52,12 +50,14 @@ def scale_features(df, scaler_file=None):
     logging.info("Scaling: computes the scaled features...")
     df_scaled_features = pd.DataFrame(
         scaler.transform(df[feature_names]),
-        columns=feature_names
+        columns=feature_names,
+        dtype=np.float16
     )
-    logging.info("Scaling: drops the original features...")
-    df.drop(feature_names, axis=1, inplace=True)
-    logging.info("Scaling: concatenates scaled features into dataframe...")
-    df = pd.concat([df, df_scaled_features], axis=1)
+    if 'is_attributed' in df.columns:
+        logging.info("Scaling: concatenates scaled features into dataframe...")
+        df = pd.concat([df.is_attributed, df_scaled_features], axis=1)
+    else:
+        df = df_scaled_features
     logging.info("Scaling complete.")
     return df
 
