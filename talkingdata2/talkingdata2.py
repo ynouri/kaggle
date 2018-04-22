@@ -29,9 +29,13 @@ def scale_features(file, scaler):
               help='Feature enriched dataset HDF file')
 @click.option('--enable-comet-ml', is_flag=True,
               help='Enable experiment results collection with Comet ML.')
-def train_(file, enable_comet_ml):
+@click.option('--n-training', default=0.60,
+              help='Training set size, can be a float or an integer.')
+def train_(file, enable_comet_ml, n_training):
     """Train the model."""
-    train.cli_train(file, enable_comet_ml)
+    if n_training >= 1.0:
+        n_training = int(n_training)
+    train.cli_train(file, enable_comet_ml, n_training)
 
 
 @click.command(name='predict')

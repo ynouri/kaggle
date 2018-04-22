@@ -35,5 +35,5 @@ def test_train():
     """Test training."""
     file = SCALED[0][0]
     enable_comet_ml = False
-    auc_score = train.cli_train(file, enable_comet_ml)
+    auc_score = train.cli_train(file, enable_comet_ml, 0.60)
     assert auc_score > 0.778
