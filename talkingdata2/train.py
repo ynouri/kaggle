@@ -1,5 +1,6 @@
 import comet_ml
 from unittest.mock import Mock
+import time
 # import pandas as pd
 # import numpy as np
 import logging
@@ -66,7 +67,9 @@ def cli_train(file, enable_comet_ml, n_training):
     X_train, X_cv, y_train, y_cv = train_test_split_df(df, n_training)
 
     # Train the model on training set
+    time_start = time.time()
     logreg = train_logreg(X_train, y_train)
+    training_time = time.time() - time_start
 
     # Persists parameters to disk
     data.persist_dump(logreg)
@@ -77,4 +80,13 @@ def cli_train(file, enable_comet_ml, n_training):
     auc_score = roc_auc_score(y_cv, y_cv_proba)
     logging.info("AUC score = {:0.4f}".format(auc_score))
     exp.log_metric("AUC score", auc_score)
+
+    # Log results to CSV file
+    data.append_to_csv_file(
+        csv_file='logreg.csv',
+        n_training="{}".format(n_training),
+        training_time="{:0.2f}".format(training_time),
+        auc_score="{:0.4f}".format(auc_score)
+    )
+
     return auc_score

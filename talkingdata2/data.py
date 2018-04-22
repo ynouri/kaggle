@@ -101,3 +101,11 @@ def persist_load(object_file_to_load):
     class_name = loaded_object.__class__.__name__
     logging.info("{} object loaded from disk.".format(class_name))
     return loaded_object
+
+
+def append_to_csv_file(csv_file, **kwargs):
+    """Append some learning parameters and results to a csv file."""
+    file_path = os.path.join(config.DATA_PATH, csv_file)
+    with open(file_path, 'a') as f:
+        f.write(",".join(kwargs.values()))
+        f.write("\n")
