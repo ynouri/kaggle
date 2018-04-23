@@ -2,6 +2,10 @@
 
 https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection
 
+## Results
+
+The results of the logistic regression models are analyzed [here](results/logreg_results.ipynb).
+
 ## How to use
 
 ```bash
@@ -16,8 +20,18 @@ https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection
 ./talkingdata2.py scale-features --file test_with_features.hdf --scaler StandardScaler.pkl
 
 # Train the linear regression model
-# It will generate coefficients file linreg_coeffs.csv
+# It will generate coefficients file LogisticRegression.pkl
 ./talkingdata2.py train --file train_with_features_scaled.hdf --enable-comet-ml --n-training 10000
+# Without Comet:
+./talkingdata2.py train --file train_with_features_scaled.hdf --n-training 10000
+
+# To loop on different training set sizes:
+range20kto1m="20000 50000 100000 200000 500000 1000000"
+range2mto50m="2000000 5000000 10000000 20000000 50000000"
+for n in $range2mto50m
+do
+./talkingdata2.py train --file train_with_features_scaled.hdf --n-training $n
+done
 
 # Generate predictions on the test data
 # A file predictions.csv is generated

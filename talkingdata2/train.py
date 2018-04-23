@@ -49,9 +49,18 @@ def train_test_split_df(df, n_training):
     )
     logging.info("Split done.")
     logging.info("Number of samples:")
-    logging.info("\tTraining set = {}".format(len(y_train)))
-    logging.info("\tCross validation set = {}".format(len(y_cv)))
+    logging.info("\tTraining set = {:,}".format(len(y_train)))
+    logging.info("\tCross validation set = {:,}".format(len(y_cv)))
     return X_train, X_cv, y_train, y_cv
+
+
+def compute_AUC_score(X, y, logreg, label):
+    """Return AUC score for a given set (training or cross-validation)."""
+    logging.info("Computing AUC score on {} set...".format(label))
+    y_proba = logreg.predict_proba(X)[:, 1]
+    auc_score = roc_auc_score(y, y_proba)
+    logging.info("AUC score {} = {:0.4f}".format(label, auc_score))
+    return auc_score
 
 
 def cli_train(file, enable_comet_ml, n_training):
@@ -74,19 +83,19 @@ def cli_train(file, enable_comet_ml, n_training):
     # Persists parameters to disk
     data.persist_dump(logreg)
 
-    # AUC score on cross-validation set
-    logging.info("Computing AUC score on cross-validation set...")
-    y_cv_proba = logreg.predict_proba(X_cv)[:, 1]
-    auc_score = roc_auc_score(y_cv, y_cv_proba)
-    logging.info("AUC score = {:0.4f}".format(auc_score))
-    exp.log_metric("AUC score", auc_score)
+    # AUC scores
+    auc_score_train = compute_AUC_score(X_train, y_train, logreg, "training")
+    auc_score_cv = compute_AUC_score(X_cv, y_cv, logreg, "cross-validation")
+    exp.log_metric("AUC score train", auc_score_train)
+    exp.log_metric("AUC score CV", auc_score_cv)
 
     # Log results to CSV file
     data.append_to_csv_file(
         csv_file='logreg.csv',
         n_training="{}".format(n_training),
         training_time="{:0.2f}".format(training_time),
-        auc_score="{:0.4f}".format(auc_score)
+        auc_score_cv="{:0.4f}".format(auc_score_cv),
+        auc_score_train="{:0.4f}".format(auc_score_train)
     )
 
-    return auc_score
+    return auc_score_cv
