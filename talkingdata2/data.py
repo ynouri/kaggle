@@ -78,6 +78,19 @@ def save_hdf(dataframe, original_file, suffix):
     logging.info("Dataframe saved.")
 
 
+def save_csv(dataframe, csv_file):
+    """Save a dataframe (most likely prediction result) in the data dir."""
+    logging.info("Saving dataframe to CSV file...")
+    file_path = os.path.join(config.DATA_PATH, csv_file)
+    logging.info("File = {}".format(file_path))
+    dataframe.to_csv(
+        file_path,
+        mode='w',
+        float_format='%.6f'
+    )
+    logging.info("Dataframe saved.")
+
+
 def persist_dump(object_to_dump):
     """
     Dump sklearn objects (scaler, logreg) to disk.

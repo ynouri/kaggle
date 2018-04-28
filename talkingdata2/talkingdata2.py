@@ -40,10 +40,10 @@ def train_(file, enable_comet_ml, n_training):
 
 @click.command(name='predict')
 @click.option('--file', help='Feature enriched dataset HDF file')
-@click.option('--parameters', help='Trained model parameters')
+@click.option('--model', help='Joblib dump (.pkl) of the trained model')
 def predict_(file, parameters):
     """Predict based on trained model and generate results to .csv."""
-    predict.cli_predict(file, parameters)
+    predict.cli_predict(file, model)
 
 
 @click.group()

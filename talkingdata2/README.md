@@ -21,9 +21,9 @@ The results of the logistic regression models are analyzed [here](results/logreg
 
 # Train the linear regression model
 # It will generate coefficients file LogisticRegression.pkl
-./talkingdata2.py train --file train_with_features_scaled.hdf --enable-comet-ml --n-training 10000
+./talkingdata2.py train --file train_with_features_scaled.hdf --enable-comet-ml --n-training 10000000
 # Without Comet:
-./talkingdata2.py train --file train_with_features_scaled.hdf --n-training 10000
+./talkingdata2.py train --file train_with_features_scaled.hdf --n-training 10000000
 
 # To loop on different training set sizes:
 range20kto1m="20000 50000 100000 200000 500000 1000000"
@@ -34,14 +34,21 @@ do
 done
 
 # Generate predictions on the test data
-# A file predictions.csv is generated
-./talkingdata2.py predict --file test_with_features.hdf --coeffs linreg_coeffs.csv
+./talkingdata2.py predict --file test_with_features_scaled.hdf --model LogisticRegression.pkl
+
+# Submit prediction using Kaggle API
+kaggle competitions submit -c talkingdata-adtracking-fraud-detection -f prediction.csv -m 'Submission'
 ```
 
 ## TO DO list & enhancement ideas
-* Compute performance of scikit-learn logistic regression for different training set sizes (n=10k, 100k, 1m, 10m) and infer total calibration time needed on 1 CPU
-* Investigate multi-threading or multi-worker calibration and what that would mean in terms of modeling (averaging of parameters at job manager level??)
-* Try different solvers outside SAG: e.g. SAGA
+* Submit a first prediction with the logistic regression model, using the Kaggle API.
+* Try other classifiers: decision trees, random forests, gradient boosting
+* Implement new methods but make sure the previous method (logistic regression) can still be used.
+
+## DONE list
+* ~~Compute performance of scikit-learn logistic regression for different training set sizes (n=10k, 100k, 1m, 10m) and infer total calibration time needed on 1 CPU~~
+* ~~Investigate multi-threading or multi-worker calibration and what that would mean in terms of modeling (averaging of parameters at job manager level??)~~
+* ~~Try different solvers outside SAG: e.g. SAGA~~
 * ~~Convert initial CSV file to HDF to get a faster loading~~
 * ~~Memory usage: scaled features data type can be a float32 or even a float16, probably wouldn't cost too much precision.~~
 * ~~Memory usage: when the features used for model training have been enriched, the other features are not needed anymore, they can be dropped to save memory usage and disk space (hdf file will be smaller)~~
