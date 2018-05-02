@@ -37,7 +37,8 @@ done
 ./talkingdata2.py predict --file test_with_features_scaled.hdf --model LogisticRegression.pkl
 
 # Submit prediction using Kaggle API
-kaggle competitions submit -c talkingdata-adtracking-fraud-detection -f prediction.csv -m 'Submission'
+prediction=~/data/kaggle-talkingdata2/prediction.csv
+kaggle competitions submit -c talkingdata-adtracking-fraud-detection -f $prediction -m 'Submission'
 ```
 
 ## TO DO list & enhancement ideas

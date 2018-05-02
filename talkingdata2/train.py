@@ -38,7 +38,8 @@ def train_logreg(X, y):
 
 def train_test_split_df(df, n_training):
     """Split the full dataset (with features, scaled) into training and CV."""
-    feature_names = features.get_all_names()
+    feature_names = df.columns.tolist()
+    feature_names.remove('is_attributed')
     logging.info("Splitting into train and cross-validation sets...")
     X_train, X_cv, y_train, y_cv = train_test_split(
         df[feature_names],
@@ -54,10 +55,10 @@ def train_test_split_df(df, n_training):
     return X_train, X_cv, y_train, y_cv
 
 
-def compute_AUC_score(X, y, logreg, label):
+def compute_AUC_score(X, y, model, label):
     """Return AUC score for a given set (training or cross-validation)."""
     logging.info("Computing AUC score on {} set...".format(label))
-    y_proba = logreg.predict_proba(X)[:, 1]
+    y_proba = model.predict_proba(X)[:, 1]
     auc_score = roc_auc_score(y, y_proba)
     logging.info("AUC score {} = {:0.4f}".format(label, auc_score))
     return auc_score
