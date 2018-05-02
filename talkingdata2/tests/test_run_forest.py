@@ -31,8 +31,8 @@ def test_add_features(file):
 
 @pytest.mark.parametrize('dataset_file', WITH_FEATURES)
 def test_add_dummies(dataset_file):
-    """Test scale features."""
-    features.cli_scale_features(dataset_file)
+    """Test add dummy features."""
+    features.cli_add_dummies(dataset_file)
 
 
 def test_train():
@@ -41,7 +41,7 @@ def test_train():
     enable_comet_ml = False
     model = 'randomforest'
     auc_score = train.cli_train(file, model, enable_comet_ml, 0.60)
-    assert auc_score > 0.9
+    assert auc_score > 0.92
 
 
 def test_predict():

@@ -5,6 +5,7 @@ import time
 # import numpy as np
 import logging
 from sklearn import linear_model
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
 # from sklearn.metrics import roc_curve
@@ -38,8 +39,28 @@ def train_logreg(X, y):
 def train_random_forest(X, y):
     """Train a random forest model."""
     logging.info("Start training random forest model...")
+    randomforest = RandomForestClassifier(
+        n_estimators=100,
+        criterion='gini',
+        max_depth=5,
+        min_samples_split=2,
+        min_samples_leaf=1,
+        min_weight_fraction_leaf=0.0,
+        max_features='auto',
+        max_leaf_nodes=None,
+        min_impurity_decrease=0.0,
+        min_impurity_split=None,
+        bootstrap=True,
+        oob_score=False,
+        n_jobs=-1,
+        random_state=0,
+        verbose=0,
+        warm_start=False,
+        class_weight='balanced'
+    )
+    randomforest.fit(X, y)
     logging.info("Model trained.")
-    pass
+    return randomforest
 
 
 def train_test_split_df(df, n_training):
@@ -102,7 +123,7 @@ def cli_train(file, model_name, enable_comet_ml, n_training):
 
     # Log results to CSV file
     data.append_to_csv_file(
-        csv_file='logreg.csv',
+        csv_file=model_name + '.csv',
         n_training="{}".format(n_training),
         training_time="{:0.2f}".format(training_time),
         auc_score_cv="{:0.4f}".format(auc_score_cv),

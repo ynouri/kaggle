@@ -74,12 +74,15 @@ kaggle competitions submit -c talkingdata-adtracking-fraud-detection -f $predict
 ```
 
 
-## TO DO list & enhancement ideas
-* Submit a first prediction with the logistic regression model, using the Kaggle API.
-* Try other classifiers: decision trees, random forests, gradient boosting
-* Implement new methods but make sure the previous method (logistic regression) can still be used.
+## TO DO list, enhancements, questions
+* Currently, no prediction can be done on the test dataset because we're using pandas get_dummies function independently on train and test datasets. Since the number of categories is different in both datasets, the classifier doesn't work. We need to move to Scikit-learn OneHotEncoder. Maybe use the sparse format for memory gains. But when to do it? Just before training/prediction? Or can the sparse format be stored on disk with the dataframe?
+* Try other classifiers: ~decision trees~, ~random forests~, gradient boosting
+* Question (ask to practitioners/Stack overflow): how to handle categorical featured with a lot of categories, on a lot of examples? (e.g. 168M x 400 categories = 60GB, using uint8) Can we gain a x8 factor in memory/disk by stacking bools together? Is this the purpose of using Compressed Sparse Row Format? Is the one hot encoding/dummy computation done before training/prediction? Can the most important categories be pre-defined using for example a PCA?
+
 
 ## DONE list
+* ~Submit a first prediction with the logistic regression model, using the Kaggle API.~
+* ~Implement new methods but make sure the previous method (logistic regression) can still be used.~
 * ~~Compute performance of scikit-learn logistic regression for different training set sizes (n=10k, 100k, 1m, 10m) and infer total calibration time needed on 1 CPU~~
 * ~~Investigate multi-threading or multi-worker calibration and what that would mean in terms of modeling (averaging of parameters at job manager level??)~~
 * ~~Try different solvers outside SAG: e.g. SAGA~~
