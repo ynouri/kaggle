@@ -17,6 +17,8 @@ FEATURES_NUNIQUE = {
 
 FEATURE_CLICK_TIME_RANK = 'click_time_rank'
 
+FEATURES_CATEGORICAL = ['os', 'app', 'device', 'channel']
+
 
 def cli_add_features(file):
     """CLI entry point for adding features to a dataset."""
@@ -35,6 +37,14 @@ def cli_scale_features(dataset_file, scaler_file):
     df = scale_features(df, scaler_file)
     info.memory(df)
     data.save_hdf(dataframe=df, original_file=dataset_file, suffix='scaled')
+
+
+def cli_add_dummies(dataset_file):
+    """CLI entry point for adding dummies to a dataset."""
+    df = data.load(dataset_file)
+    add_dummies(df)
+    info.memory(df)
+    data.save_hdf(dataframe=df, original_file=dataset_file, suffix='dummies')
 
 
 def scale_features(df, scaler_file=None):
@@ -60,6 +70,14 @@ def scale_features(df, scaler_file=None):
         df = df_scaled_features
     logging.info("Scaling complete.")
     return df
+
+
+def add_dummies(df):
+    """Add dummies to a dataframe for categorical data columns."""
+    logging.info("Number of columns = {}".format(df.shape[1]))
+    logging.info("Adding dummies to dataframe...")
+    logging.info("New number of columns = {}".format(df.shape[1]))
+    pass
 
 
 def get_all_names():

@@ -10,7 +10,6 @@ from sklearn.metrics import roc_auc_score
 # from sklearn.metrics import roc_curve
 # Project modules
 import config
-import features
 import data
 
 
@@ -24,7 +23,7 @@ def get_experiment(enable_comet_ml=True):
 
 def train_logreg(X, y):
     """Train a logistic regression model."""
-    logging.info("Start training model...")
+    logging.info("Start training logistic regression model...")
     logreg = linear_model.LogisticRegression(
         solver='sag',
         verbose=0,
@@ -34,6 +33,13 @@ def train_logreg(X, y):
     logreg.fit(X, y)
     logging.info("Model trained.")
     return logreg
+
+
+def train_random_forest(X, y):
+    """Train a random forest model."""
+    logging.info("Start training random forest model...")
+    logging.info("Model trained.")
+    pass
 
 
 def train_test_split_df(df, n_training):
@@ -64,7 +70,7 @@ def compute_AUC_score(X, y, model, label):
     return auc_score
 
 
-def cli_train(file, enable_comet_ml, n_training):
+def cli_train(file, model_name, enable_comet_ml, n_training):
     """Train CLI entry point."""
     # Create Comet experiment
     exp = get_experiment(enable_comet_ml)
@@ -78,15 +84,19 @@ def cli_train(file, enable_comet_ml, n_training):
 
     # Train the model on training set
     time_start = time.time()
-    logreg = train_logreg(X_train, y_train)
+    train_fun = {
+        'logreg': train_logreg,
+        'randomforest': train_random_forest
+    }
+    model = train_fun[model_name](X_train, y_train)
     training_time = time.time() - time_start
 
     # Persists parameters to disk
-    data.persist_dump(logreg)
+    data.persist_dump(model)
 
     # AUC scores
-    auc_score_train = compute_AUC_score(X_train, y_train, logreg, "training")
-    auc_score_cv = compute_AUC_score(X_cv, y_cv, logreg, "cross-validation")
+    auc_score_train = compute_AUC_score(X_train, y_train, model, "training")
+    auc_score_cv = compute_AUC_score(X_cv, y_cv, model, "cross-validation")
     exp.log_metric("AUC score train", auc_score_train)
     exp.log_metric("AUC score CV", auc_score_cv)
 

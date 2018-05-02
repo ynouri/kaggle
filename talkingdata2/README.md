@@ -8,38 +8,65 @@ The results of the logistic regression models are analyzed [here](results/logreg
 
 ## How to use
 
+### Add new features
+
+This will create new hierarchical data format (.hdf) files, for example `train_with_features.hdf`.
+
 ```bash
-# Add the features to the model
-# It will generate train_with_features.hdf.
-# Do it both for train & test sets
 ./talkingdata2.py add-features --file train.csv
 ./talkingdata2.py add-features --file test.csv
+```
 
-# Scale the features
+### Scale the features
+
+This step is specific to logistic regression model. This will create new .hdf file with scaled features, named for example `train_with_features_scaled.hdf`.
+
+```bash
 ./talkingdata2.py scale-features --file train_with_features.hdf
 ./talkingdata2.py scale-features --file test_with_features.hdf --scaler StandardScaler.pkl
+```
 
-# Train the linear regression model
-# It will generate coefficients file LogisticRegression.pkl
-./talkingdata2.py train --file train_with_features_scaled.hdf --enable-comet-ml --n-training 10000000
-# Without Comet:
-./talkingdata2.py train --file train_with_features_scaled.hdf --n-training 10000000
+### Add dummy features (one hot encoder)
 
-# To loop on different training set sizes:
-range20kto1m="20000 50000 100000 200000 500000 1000000"
-range2mto50m="2000000 5000000 10000000 20000000 50000000"
-for n in $range2mto50m
+This step is specific to random forest model. This will create new .hdf file wih dummy features, named for example `train_with_features_dummies.hdf`.
+
+```bash
+./talkingdata2.py add-dummies --file train_with_features.hdf
+./talkingdata2.py add-dummies --file test_with_features.hdf
+```
+
+### Train a logistic regression model
+This will generate coefficients file `LogisticRegression.pkl`. Comet ML can be enabled with the `--enable-comet-ml` argument.
+```bash
+./talkingdata2.py train --file train_with_features_scaled.hdf --model logreg --enable-comet-ml --n-training 10000000
+```
+
+### Loop on different training set sizes
+```bash
+range20kto10m="20000 50000 100000 200000 500000 1000000 2000000 5000000 10000000"
+for n in $range20kto10m
 do
-./talkingdata2.py train --file train_with_features_scaled.hdf --n-training $n
+./talkingdata2.py train --file train_with_features_scaled.hdf --model logreg --n-training $n
 done
+```
 
-# Generate predictions on the test data
-./talkingdata2.py predict --file test_with_features_scaled.hdf --model LogisticRegression.pkl
+## Train a random forest model
+```bash
+./talkingdata2.py train --file train_with_features_dummies.hdf --model randomforest --n-training 10000
+```
 
-# Submit prediction using Kaggle API
+### Generate predictions on the test data
+```bash
+./talkingdata2.py predict --file test_with_features_scaled.hdf --model LogisticRegression.pkl # for logistic regression
+./talkingdata2.py predict --file test_with_features_dummies.hdf --model RandomForestClassifier.pkl # for random forest
+```
+
+### Submit predictions using Kaggle API
+```bash
 prediction=~/data/kaggle-talkingdata2/prediction.csv
 kaggle competitions submit -c talkingdata-adtracking-fraud-detection -f $prediction -m 'Submission'
 ```
+
 
 ## TO DO list & enhancement ideas
 * Submit a first prediction with the logistic regression model, using the Kaggle API.
