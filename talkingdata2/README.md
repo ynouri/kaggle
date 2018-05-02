@@ -10,7 +10,7 @@ The results of the logistic regression models are analyzed [here](results/logreg
 
 ### Add new features
 
-This will create new hierarchical data format (.hdf) files, for example `train_with_features.hdf`.
+This will create a new hierarchical data format (.hdf) file, for example `train_with_features.hdf`.
 
 ```bash
 ./talkingdata2.py add-features --file train.csv
@@ -19,7 +19,7 @@ This will create new hierarchical data format (.hdf) files, for example `train_w
 
 ### Scale the features
 
-This step is specific to logistic regression model. This will create new .hdf file with scaled features, named for example `train_with_features_scaled.hdf`.
+This step is specific to logistic regression model. This will create a new .hdf file with scaled features, named for example `train_with_features_scaled.hdf`.
 
 ```bash
 ./talkingdata2.py scale-features --file train_with_features.hdf
@@ -28,7 +28,7 @@ This step is specific to logistic regression model. This will create new .hdf fi
 
 ### Add dummy features (one hot encoder)
 
-This step is specific to random forest model. This will create new .hdf file wih dummy features, named for example `train_with_features_dummies.hdf`.
+This step is specific to random forest model. This will create a new .hdf file wih dummy features, named for example `train_with_features_dummies.hdf`.
 
 ```bash
 ./talkingdata2.py add-dummies --file train_with_features.hdf
@@ -36,7 +36,7 @@ This step is specific to random forest model. This will create new .hdf file wih
 ```
 
 ### Train a logistic regression model
-This will generate coefficients file `LogisticRegression.pkl`. Comet ML can be enabled with the `--enable-comet-ml` argument.
+This will generate a coefficients file `LogisticRegression.pkl`. Comet ML can be enabled with the `--enable-comet-ml` argument.
 ```bash
 ./talkingdata2.py train --file train_with_features_scaled.hdf --model logreg --enable-comet-ml --n-training 10000000
 ```
@@ -50,15 +50,21 @@ do
 done
 ```
 
-## Train a random forest model
+### Train a random forest model
 ```bash
 ./talkingdata2.py train --file train_with_features_dummies.hdf --model randomforest --n-training 10000
 ```
 
 ### Generate predictions on the test data
+
+This step will generate a `prediction.csv` file.
+
 ```bash
-./talkingdata2.py predict --file test_with_features_scaled.hdf --model LogisticRegression.pkl # for logistic regression
-./talkingdata2.py predict --file test_with_features_dummies.hdf --model RandomForestClassifier.pkl # for random forest
+# For logistic regression:
+./talkingdata2.py predict --file test_with_features_scaled.hdf --model LogisticRegression.pkl
+
+# For random forest:
+./talkingdata2.py predict --file test_with_features_dummies.hdf --model RandomForestClassifier.pkl
 ```
 
 ### Submit predictions using Kaggle API
