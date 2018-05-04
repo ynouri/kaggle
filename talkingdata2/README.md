@@ -75,6 +75,7 @@ kaggle competitions submit -c talkingdata-adtracking-fraud-detection -f $predict
 
 
 ## TO DO list, enhancements, questions
+* Implement the One Hot Encoder in memory (using sparse matrices, no need to dump to disk). Best would be to use a scikit-learn pipeline.
 * Currently, no prediction can be done on the test dataset because we're using pandas get_dummies function independently on train and test datasets. Since the number of categories is different in both datasets, the classifier doesn't work. We need to move to Scikit-learn OneHotEncoder. Maybe use the sparse format for memory gains. But when to do it? Just before training/prediction? Or can the sparse format be stored on disk with the dataframe?
 * Try other classifiers: ~decision trees~, ~random forests~, gradient boosting
 * Question (ask to practitioners/Stack overflow): how to handle categorical featured with a lot of categories, on a lot of examples? (e.g. 168M x 400 categories = 60GB, using uint8) Can we gain a x8 factor in memory/disk by stacking bools together? Is this the purpose of using Compressed Sparse Row Format? Is the one hot encoding/dummy computation done before training/prediction? Can the most important categories be pre-defined using for example a PCA?

@@ -41,16 +41,6 @@ def cli_scale_features(dataset_file, scaler_file):
     data.save_hdf(dataframe=df, original_file=dataset_file, suffix='scaled')
 
 
-def cli_add_dummies(dataset_file):
-    """CLI entry point for adding dummies to a dataset."""
-    df = data.load(dataset_file)
-    df = add_dummies(df)
-    info.memory(df)
-    df = remove_time_features(df)
-    info.memory(df)
-    data.save_hdf(dataframe=df, original_file=dataset_file, suffix='dummies')
-
-
 def scale_features(df, scaler_file=None):
     """Scale the features of a dataframe and dump the scaler to disk."""
     feature_names = get_all_names()
@@ -73,15 +63,6 @@ def scale_features(df, scaler_file=None):
     else:
         df = df_scaled_features
     logging.info("Scaling complete.")
-    return df
-
-
-def add_dummies(df):
-    """Add dummies to a dataframe for categorical data columns."""
-    logging.info("Number of columns = {}".format(df.shape[1]))
-    logging.info("Adding dummies to dataframe...")
-    df = pd.get_dummies(df, columns=FEATURES_CATEGORICAL)
-    logging.info("New number of columns = {}".format(df.shape[1]))
     return df
 
 

@@ -6,6 +6,7 @@ import time
 import logging
 from sklearn import linear_model
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
 # from sklearn.metrics import roc_curve

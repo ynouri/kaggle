@@ -14,10 +14,6 @@ WITH_FEATURES = [
     'test_sample_with_features.hdf',
 ]
 
-WITH_DUMMIES = [
-    'train_sample_with_features_dummies.hdf',
-    'test_sample_with_features_dummies.hdf'
-]
 
 MODEL_FILE = 'RandomForestClassifier.pkl'
 
@@ -29,15 +25,9 @@ def test_add_features(file):
     features.cli_add_features(file)
 
 
-@pytest.mark.parametrize('dataset_file', WITH_FEATURES)
-def test_add_dummies(dataset_file):
-    """Test add dummy features."""
-    features.cli_add_dummies(dataset_file)
-
-
 def test_train():
     """Test training."""
-    file = WITH_DUMMIES[0]
+    file = WITH_FEATURES[0]
     enable_comet_ml = False
     model = 'randomforest'
     auc_score = train.cli_train(file, model, enable_comet_ml, 0.60)
@@ -46,4 +36,4 @@ def test_train():
 
 def test_predict():
     """Test predict."""
-    predict.cli_predict(WITH_DUMMIES[1], MODEL_FILE)
+    predict.cli_predict(WITH_FEATURES[1], MODEL_FILE)
