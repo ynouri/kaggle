@@ -30,7 +30,7 @@ def test_train():
     file = WITH_FEATURES[0]
     enable_comet_ml = False
     model = 'randomforest'
-    auc_score = train.cli_train(file, model, enable_comet_ml, 0.60)
+    auc_score = train.cli_train(file, model, enable_comet_ml, 50000)
     assert auc_score > 0.91
 
 

@@ -52,7 +52,7 @@ done
 
 ### Train a random forest model
 ```bash
-./talkingdata2.py train --file train_with_features_dummies.hdf --model randomforest --n-training 10000
+./talkingdata2.py train --file train_with_features.hdf --model randomforest --n-training 10000
 ```
 
 ### Generate predictions on the test data
@@ -64,7 +64,7 @@ This step will generate a `prediction.csv` file.
 ./talkingdata2.py predict --file test_with_features_scaled.hdf --model LogisticRegression.pkl
 
 # For random forest:
-./talkingdata2.py predict --file test_with_features_dummies.hdf --model Pipeline.pkl
+./talkingdata2.py predict --file test_with_features.hdf --model Pipeline.pkl
 ```
 
 ### Submit predictions using Kaggle API

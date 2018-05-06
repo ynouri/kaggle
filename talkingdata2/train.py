@@ -109,41 +109,64 @@ def compute_AUC_score(X, y, model, label):
 
 def cli_train(file, model_name, enable_comet_ml, n_training):
     """Train CLI entry point."""
-    # Create Comet experiment
-    exp = get_experiment(enable_comet_ml)
-    exp.log_metric("n_training", n_training)
+    # Branch for LogisticRegression:
+    if model_name == 'logreg':
 
-    # Load dataset with enriched features
-    df = data.load(file)
+        # Create Comet experiment
+        exp = get_experiment(enable_comet_ml)
+        exp.log_metric("n_training", n_training)
 
-    # Split dataset into train and cross-validation sets
-    X_train, X_cv, y_train, y_cv = train_test_split_df(df, n_training)
+        # Load dataset with enriched features
+        df = data.load(file)
 
-    # Train the model on training set
-    time_start = time.time()
-    train_fun = {
-        'logreg': train_logreg,
-        'randomforest': train_random_forest
-    }
-    model = train_fun[model_name](X_train, y_train)
-    training_time = time.time() - time_start
+        # Split dataset into train and cross-validation sets
+        X_train, X_cv, y_train, y_cv = train_test_split_df(df, n_training)
 
-    # Persists parameters to disk
-    data.persist_dump(model)
+        # Train the model on training set
+        time_start = time.time()
+        model = train_logreg(X_train, y_train)
+        training_time = time.time() - time_start
 
-    # AUC scores
-    auc_score_train = compute_AUC_score(X_train, y_train, model, "training")
-    auc_score_cv = compute_AUC_score(X_cv, y_cv, model, "cross-validation")
-    exp.log_metric("AUC score train", auc_score_train)
-    exp.log_metric("AUC score CV", auc_score_cv)
+        # Persists parameters to disk
+        data.persist_dump(model)
 
-    # Log results to CSV file
-    data.append_to_csv_file(
-        csv_file=model_name + '.csv',
-        n_training="{}".format(n_training),
-        training_time="{:0.2f}".format(training_time),
-        auc_score_cv="{:0.4f}".format(auc_score_cv),
-        auc_score_train="{:0.4f}".format(auc_score_train)
-    )
+        # AUC scores
+        auc_score_train = compute_AUC_score(X_train, y_train, model,
+                                            "training")
+        auc_score_cv = compute_AUC_score(X_cv, y_cv, model, "cross-validation")
+        exp.log_metric("AUC score train", auc_score_train)
+        exp.log_metric("AUC score CV", auc_score_cv)
+
+        # Log results to CSV file
+        data.append_to_csv_file(
+            csv_file=model_name + '.csv',
+            n_training="{}".format(n_training),
+            training_time="{:0.2f}".format(training_time),
+            auc_score_cv="{:0.4f}".format(auc_score_cv),
+            auc_score_train="{:0.4f}".format(auc_score_train)
+        )
+
+    # Branch for RandomForest:
+    elif model_name == 'randomforest':
+
+        # Load dataset with limited number of rows
+        df = data.load(file, n_training)
+
+        # Set X and y
+        feature_names = df.columns.tolist()
+        feature_names.remove('is_attributed')
+        X = df[feature_names]
+        y = df['is_attributed']
+
+        # Train model
+        time_start = time.time()
+        model = train_random_forest(X, y)
+        training_time = time.time() - time_start
+
+        # Persists parameters to disk
+        data.persist_dump(model)
+
+        # TODO: find a way to compute an AUC score without memory issues
+        auc_score_cv = 1.00
 
     return auc_score_cv

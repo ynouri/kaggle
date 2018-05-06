@@ -34,7 +34,7 @@ def get_parse_dates(file):
     return parse_dates
 
 
-def load(file):
+def load(file, n_samples=None):
     """Load a .csv or .hdf dataset from data directory."""
     _, extension = os.path.splitext(file)
     file_path = os.path.join(config.DATA_PATH, file)
@@ -43,7 +43,7 @@ def load(file):
     if extension == '.csv':
         df = pd.read_csv(
             filepath_or_buffer=file_path,
-            nrows=None,
+            nrows=n_samples,
             dtype=get_column_dtypes(file),
             parse_dates=get_parse_dates(file)
         )
@@ -51,7 +51,7 @@ def load(file):
         df = pd.read_hdf(
             path_or_buf=file_path,
             key='data',
-            nrows=None
+            stop=n_samples
         )
     logging.info("Dataframe loaded.")
     info.rows(df)
