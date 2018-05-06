@@ -15,7 +15,7 @@ WITH_FEATURES = [
 ]
 
 
-MODEL_FILE = 'RandomForestClassifier.pkl'
+MODEL_FILE = 'Pipeline.pkl'
 
 
 # TODO: refactorize this test with test_run_logreg.py and re-use the same file.
@@ -31,7 +31,7 @@ def test_train():
     enable_comet_ml = False
     model = 'randomforest'
     auc_score = train.cli_train(file, model, enable_comet_ml, 0.60)
-    assert auc_score > 0.92
+    assert auc_score > 0.91
 
 
 def test_predict():

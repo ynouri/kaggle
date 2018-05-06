@@ -28,6 +28,7 @@ def cli_add_features(file):
     df = data.load(file)
     # Add features
     add_all(df)
+    df = remove_time_features(df)
     info.memory(df)
     # Save dataset enriched with features
     data.save_hdf(dataframe=df, original_file=file, suffix='with_features')
@@ -55,15 +56,19 @@ def scale_features(df, scaler_file=None):
     df_scaled_features = pd.DataFrame(
         scaler.transform(df[feature_names]),
         columns=feature_names,
-        dtype=np.float16
+        dtype=np.float32
     )
+    logging.info("Scaling: concatenates scaled features into dataframe...")
     if 'is_attributed' in df.columns:
-        logging.info("Scaling: concatenates scaled features into dataframe...")
-        df = pd.concat([df.is_attributed, df_scaled_features], axis=1)
-    else:
-        df = df_scaled_features
+        df_scaled_features = pd.concat(
+            [df_scaled_features, df.is_attributed],
+            axis=1)
+    if 'click_id' in df.columns:
+        df_scaled_features = pd.concat(
+            [df.click_id, df_scaled_features],
+            axis=1)
     logging.info("Scaling complete.")
-    return df
+    return df_scaled_features
 
 
 def remove_time_features(df):

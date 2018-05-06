@@ -4,14 +4,17 @@ import time
 # import pandas as pd
 # import numpy as np
 import logging
+import numpy as np
 from sklearn import linear_model
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
 # from sklearn.metrics import roc_curve
 # Project modules
 import config
+import features
 import data
 
 
@@ -40,10 +43,11 @@ def train_logreg(X, y):
 def train_random_forest(X, y):
     """Train a random forest model."""
     logging.info("Start training random forest model...")
+    cat_idx = [X.columns.get_loc(f) for f in features.FEATURES_CATEGORICAL]
     randomforest = RandomForestClassifier(
-        n_estimators=100,
+        n_estimators=200,
         criterion='gini',
-        max_depth=5,
+        max_depth=25,
         min_samples_split=2,
         min_samples_leaf=1,
         min_weight_fraction_leaf=0.0,
@@ -59,9 +63,20 @@ def train_random_forest(X, y):
         warm_start=False,
         class_weight='balanced'
     )
-    randomforest.fit(X, y)
+    encoder = OneHotEncoder(
+        n_values='auto',
+        categorical_features=cat_idx,
+        dtype=np.uint8,
+        sparse=True,
+        handle_unknown='ignore'
+    )
+    model = Pipeline([
+        ('enc', encoder),
+        ('clf', randomforest)
+    ])
+    model.fit(X, y)
     logging.info("Model trained.")
-    return randomforest
+    return model
 
 
 def train_test_split_df(df, n_training):
